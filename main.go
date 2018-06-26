@@ -20,6 +20,7 @@ var proxies = map[string]Proxy{}
 func main() {
 	r := gin.Default()
 	r.GET("/add", addProxy)
+	r.GET("/del", delProxy)
 	r.GET("/get", getProxy)
 	r.Run(":9010") // listen and serve on 0.0.0.0:8080
 }
@@ -66,4 +67,24 @@ func getProxy(c *gin.Context) {
 		c.String(http.StatusOK, px[i])
 	}
 	c.String(http.StatusOK, "")
+}
+
+type delProxyQuery struct {
+	Id   string `form:"id"`
+}
+
+
+//删除proxy
+func delProxy(c *gin.Context) {
+	var query delProxyQuery
+	err := c.ShouldBindQuery(&query)
+	if err != nil {
+		c.Error(err)
+	}
+	if query.Id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "id不能为空"})
+	}
+	delete(proxies, query.Id)
+
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
