@@ -40,9 +40,6 @@ func main() {
 		log.Fatal("port 必填")
 	}
 
-	//开启代理服务
-	go startProxy(port)
-
 	for {
 		//发起请求删除
 		err := sendDelete(host, id)
