@@ -48,13 +48,14 @@ func main() {
 		err := sendDelete(host, id)
 		if err != nil {
 			log.WithError(err).Error("删除代理错误")
+		} else {
+			log.Info("删除代理成功")
 		}
-		log.Info("删除代理成功")
 
 		err = updateIP()
 		if err != nil {
 			log.WithError(err).Error("更新IP错误")
-			time.Sleep(3 * time.Second)
+			time.Sleep(5 * time.Second)
 			continue
 		}
 		log.Info("更新IP成功")
@@ -63,6 +64,8 @@ func main() {
 		err = sendUpdate(host, id, port)
 		if err != nil {
 			log.WithError(err).Error("发送代理错误")
+			time.Sleep(3 * time.Second)
+			continue
 		}
 		log.Info("发送代理成功")
 		time.Sleep(time.Duration(changeInterval) * time.Minute)
@@ -107,19 +110,20 @@ func req(u string) error {
 func updateIP() error {
 	res, err := execShell("pppoe-stop")
 	if err != nil {
-		return err
+		return fmt.Errorf("pppoe-stop: %s", err)
 	}
 	log.Debug(res)
 
 	res, err = execShell("pppoe-start")
 	if err != nil {
-		return err
+		return fmt.Errorf("pppoe-start: %s", err)
 	}
 	log.Debug(res)
+	time.Sleep(2 * time.Second)
 
 	res, err = execShell("pppoe-status")
 	if err != nil {
-		return err
+		return fmt.Errorf("pppoe-status: %s", err)
 	}
 	log.Debug(res)
 	if strings.Contains(res, "Link is down") {
