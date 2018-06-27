@@ -39,9 +39,11 @@ func addProxy(c *gin.Context) {
 	}
 	if query.Id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "id不能为空"})
+		return
 	}
 	if query.Port == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "port不能为空"})
+		return
 	}
 
 	//获取IP
@@ -80,9 +82,11 @@ func delProxy(c *gin.Context) {
 	err := c.ShouldBindQuery(&query)
 	if err != nil {
 		c.Error(err)
+		return
 	}
 	if query.Id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "error": "id不能为空"})
+		return
 	}
 	delete(proxies, query.Id)
 
