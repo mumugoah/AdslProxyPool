@@ -9,6 +9,9 @@ import (
 
 	"strings"
 
+	"net/http"
+
+	"github.com/elazarl/goproxy"
 	"github.com/parnurzeal/gorequest"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
@@ -36,6 +39,9 @@ func main() {
 	if port == "" {
 		log.Fatal("port 必填")
 	}
+
+	//开启代理服务
+	go startProxy(port)
 
 	for {
 		//发起请求删除
@@ -70,6 +76,11 @@ func sendDelete(host, id string) error {
 		return err
 	}
 	return nil
+}
+
+func startProxy(port string) {
+	proxy := goproxy.NewProxyHttpServer()
+	log.Fatal(http.ListenAndServe(":"+port, proxy))
 }
 
 func sendUpdate(host, id, port string) error {
