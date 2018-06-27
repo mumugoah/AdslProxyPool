@@ -109,10 +109,7 @@ func req(u string) error {
 
 func updateIP() error {
 	res, err := execShell("pppoe-stop")
-	if err != nil {
-		return fmt.Errorf("pppoe-stop: %s", err)
-	}
-	log.Debug(res)
+	log.Debug(err, res)
 
 	res, err = execShell("pppoe-start")
 	if err != nil {
