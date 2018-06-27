@@ -26,7 +26,7 @@ func main() {
 	flag.StringVar(&host, "host", "", "server host")
 	flag.StringVar(&id, "id", "", "client id")
 	flag.StringVar(&port, "port", "", "server host")
-	flag.IntVar(&changeInterval, "changeInterval", 3, "change IP minutes")
+	flag.IntVar(&changeInterval, "changeInterval", 180, "change IP minutes")
 
 	flag.Parse()
 
@@ -68,7 +68,7 @@ func main() {
 			continue
 		}
 		log.Info("发送代理成功")
-		time.Sleep(time.Duration(changeInterval) * time.Minute)
+		time.Sleep(time.Duration(changeInterval) * time.Second)
 	}
 }
 
@@ -116,7 +116,7 @@ func updateIP() error {
 		return fmt.Errorf("pppoe-start: %s", err)
 	}
 	log.Debug(res)
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 
 	res, err = execShell("pppoe-status")
 	if err != nil {
