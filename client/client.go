@@ -9,9 +9,6 @@ import (
 
 	"strings"
 
-	"net/http"
-
-	"github.com/elazarl/goproxy"
 	"github.com/parnurzeal/gorequest"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
@@ -78,11 +75,6 @@ func sendDelete(host, id string) error {
 	return nil
 }
 
-func startProxy(port string) {
-	proxy := goproxy.NewProxyHttpServer()
-	log.Fatal(http.ListenAndServe(":"+port, proxy))
-}
-
 func sendUpdate(host, id, port string) error {
 	u := fmt.Sprintf("%s/add?id=%s&port=%s", host, id, port)
 	err := req(u)
@@ -94,7 +86,7 @@ func sendUpdate(host, id, port string) error {
 
 func req(u string) error {
 	client := gorequest.New()
-	_, body, errs := client.Get(u).End()
+	_, body, errs := client.Get(u).Timeout(3 * time.Second).End()
 	if len(errs) > 0 {
 		return fmt.Errorf("请求失败: %s", errs)
 	}
