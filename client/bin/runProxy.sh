@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+ulimit -n 4096
+
+
 nohup ./adslProxyClient-linux -host http://proxy.mumulife.com:9010 -id 1 -port 55155 -changeInterval 40 > client.log 2>&1 &
 
 while :
